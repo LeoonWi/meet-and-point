@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meet_and_point/map_screen.dart';
+import 'package:latlong2/latlong.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,10 +33,20 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  List<LatLng> get _mapPoints => const [
+    LatLng(55.755793, 37.617134),
+    LatLng(55.095960, 38.765519),
+    LatLng(56.129038, 40.406502),
+    LatLng(54.513645, 36.261268),
+    LatLng(54.193122, 37.617177),
+    LatLng(54.629540, 39.741809),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: MapScreen(markerList: [],),
+      body: MapScreen(markerList: _mapPoints,),
     );
   }
 

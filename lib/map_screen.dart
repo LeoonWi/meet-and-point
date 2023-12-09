@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:latlong2/latlong.dart';
-// import 'package:geolocator/geolocator.dart';
+import 'package:geolocator/geolocator.dart';
 
 class MapScreen extends StatefulWidget {
-  MapScreen({super.key, required List<LatLng> this.markerList});
-  List<LatLng> markerList;
+  List<LatLng> markerList = [];
 
+  MapScreen({super.key, required this.markerList});
 
   @override
   State<StatefulWidget> createState() => _MapScreenState();
@@ -16,7 +16,7 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
 
   final _mapController = MapController();
-  List<Placemark> location = [];
+  // List<Placemark> location = [];
   List<Marker> mapPoints = [];
 
   /// Метод генерации маркеров
@@ -46,22 +46,32 @@ class _MapScreenState extends State<MapScreen> {
         FlutterMap(
           mapController: _mapController,
           options: MapOptions(
-            initialCenter: const LatLng(49.5, -0.09),
-            initialZoom: 5.0,
+            initialCenter: const LatLng(55.749448, 37.624705),
+            initialZoom: 9.0,
+            cameraConstraint: CameraConstraint.contain(
+                bounds: LatLngBounds(
+                  const LatLng(-90, -180),
+                  const LatLng(90, 180)
+                )
+            ),
+            interactionOptions: const InteractionOptions(
+              flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
+            ),
             onTap: (TapPosition p, LatLng l) async {
               // location = await placemarkFromCoordinates(l.latitude, l.longitude);
               // debugPrint("${location}");
-              setState(() {
-                mapPoints.add(
-                    Marker(
-                      point: l,
-                      child: Image.asset('assets/icons/map_marker.png'),
-                      width: 50,
-                      height: 50,
-                      alignment: Alignment.center,
-                    )
-                );
-              });
+              if(mapPoints.length > widget.markerList.length) mapPoints.removeAt(widget.markerList.length);
+              mapPoints.add(
+                  Marker(
+                    point: l,
+                    child: Image.asset('assets/icons/map_marker.png'),
+                    width: 50,
+                    height: 50,
+                    alignment: Alignment.center,
+                  )
+              );
+              debugPrint(l.toString());
+              setState(() {});
             }
           ),
           children: [
@@ -77,4 +87,6 @@ class _MapScreenState extends State<MapScreen> {
       ]
     );
   }
+
+
 }
