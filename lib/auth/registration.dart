@@ -11,9 +11,6 @@ class RegistrationPage extends StatelessWidget {
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        scaffoldBackgroundColor: const Color(0xFF285BC0),
-      ),
       home: Scaffold(
         resizeToAvoidBottomInset : false,
         body: Padding(
@@ -87,6 +84,9 @@ class RegistrationPage extends StatelessWidget {
                 onPressed: () {
 
                 },
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(182, 44),
+                ),
                 child: const Text('Создать аккаунт', style: TextStyle(color: Color(0xFF285BC0)))),
               const SizedBox(height: 26),
               ElevatedButton(
@@ -95,6 +95,7 @@ class RegistrationPage extends StatelessWidget {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF102F6A),
+                  minimumSize: const Size(182, 44),
                 ),
                 child: const Text('Уже есть аккаунт?', style: TextStyle(
                     color: Colors.white,

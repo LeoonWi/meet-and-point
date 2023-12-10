@@ -6,8 +6,13 @@ import 'package:geolocator/geolocator.dart';
 
 class MapScreen extends StatefulWidget {
   List<LatLng> markerList = [];
+  int indexFlag;
+  bool allowOnTap;
+  LatLng? initCenter;
+  double? initZoom;
 
-  MapScreen({super.key, required this.markerList});
+
+  MapScreen({super.key, required this.markerList, required this.indexFlag, required this.allowOnTap, this.initCenter, this.initZoom});
 
   @override
   State<StatefulWidget> createState() => _MapScreenState();
@@ -18,6 +23,11 @@ class _MapScreenState extends State<MapScreen> {
   final _mapController = MapController();
   // List<Placemark> location = [];
   List<Marker> mapPoints = [];
+
+  List<int> get _flags => const [
+    InteractiveFlag.all & ~InteractiveFlag.rotate,
+    InteractiveFlag.none,
+  ];
 
   /// Метод генерации маркеров
   List<Marker> _getMarkers(List<LatLng> mapPoints) {
@@ -46,32 +56,80 @@ class _MapScreenState extends State<MapScreen> {
         FlutterMap(
           mapController: _mapController,
           options: MapOptions(
-            initialCenter: const LatLng(55.749448, 37.624705),
-            initialZoom: 9.0,
+            initialCenter: (widget.initCenter != null) ? widget.initCenter! : const LatLng(55.749448, 37.624705),
+            initialZoom: (widget.initZoom != null) ? widget.initZoom! : 9.0,
             cameraConstraint: CameraConstraint.contain(
                 bounds: LatLngBounds(
                   const LatLng(-90, -180),
                   const LatLng(90, 180)
                 )
             ),
-            interactionOptions: const InteractionOptions(
-              flags: InteractiveFlag.all & ~InteractiveFlag.rotate,
+            interactionOptions: InteractionOptions(
+              flags: _flags[widget.indexFlag],
             ),
             onTap: (TapPosition p, LatLng l) async {
-              // location = await placemarkFromCoordinates(l.latitude, l.longitude);
-              // debugPrint("${location}");
-              if(mapPoints.length > widget.markerList.length) mapPoints.removeAt(widget.markerList.length);
-              mapPoints.add(
-                  Marker(
-                    point: l,
-                    child: Image.asset('assets/icons/map_marker.png'),
-                    width: 50,
-                    height: 50,
-                    alignment: Alignment.center,
-                  )
-              );
-              debugPrint(l.toString());
-              setState(() {});
+              if (widget.allowOnTap == true) {
+                // location = await placemarkFromCoordinates(l.latitude, l.longitude);
+                // debugPrint("${location}");
+                if(mapPoints.length > widget.markerList.length) mapPoints.removeAt(widget.markerList.length);
+                mapPoints.add(
+                    Marker(
+                      point: l,
+                      child: Image.asset('assets/icons/map_marker.png'),
+                      width: 50,
+                      height: 50,
+                      alignment: Alignment.center,
+                    )
+                );
+                _mapController.move(l, 15);
+                setState(() {});
+                showBottomSheet(context: context, backgroundColor: Colors.transparent, elevation: 0, builder: (context) {
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                        children: <Widget>[
+                          const Spacer(),
+                          IconButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                setState(() {
+                                  mapPoints.removeAt(widget.markerList.length);
+                                });
+                              },
+                              icon: const Icon(Icons.close),
+                              iconSize: 50,
+                              color: Colors.white,
+                              style: IconButton.styleFrom(
+                                  backgroundColor: Colors.red[900],
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15)
+                                  ),
+                                  fixedSize: const Size(80, 80)
+                              )
+                          ),
+                          const Spacer(),
+                          IconButton(
+                              onPressed: () {
+
+                              },
+                              icon: const Icon(Icons.check),
+                              iconSize: 50,
+                              color: Colors.white,
+                              style: IconButton.styleFrom(
+                                  backgroundColor: Colors.green[900],
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15)
+                                  ),
+                                  fixedSize: const Size(80, 80)
+                              )
+                          ),
+                          const Spacer()
+                        ]
+                    ),
+                  );
+                });
+                debugPrint(l.toString());
+              }
             }
           ),
           children: [
@@ -83,10 +141,8 @@ class _MapScreenState extends State<MapScreen> {
                 markers: mapPoints,
             ),
           ]
-        )
+        ),
       ]
     );
   }
-
-
 }
