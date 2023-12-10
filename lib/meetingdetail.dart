@@ -30,63 +30,79 @@ class MeetingDetailsPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Meeting Details'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // MapScreen at the top
-            Container(
-              width: double.infinity,
-              height: 100,
-              child: MapScreen(
-                markerList: const [
-                  LatLng(55.755793, 37.617134),
-                  LatLng(55.095960, 38.765519),
-                  LatLng(56.129038, 40.406502),
-                  LatLng(54.513645, 36.261268),
-                  LatLng(54.193122, 37.617177),
-                  LatLng(54.629540, 39.741809),
-                ],
+      body: Container(
+        decoration: BoxDecoration(
+          color: Color(0xFF285BC0), // Добавляем фон
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // MapScreen at the top
+              Container(
+                width: 150,
+                height: 150,
+                child: MapScreen(
+                  markerList: const [
+                    LatLng(55.755793, 37.617134),
+                    LatLng(55.095960, 38.765519),
+                    LatLng(56.129038, 40.406502),
+                    LatLng(54.513645, 36.261268),
+                    LatLng(54.193122, 37.617177),
+                    LatLng(54.629540, 39.741809),
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: 16),
-            // Organizer name, address, date, and time
-            Text(
-              'Organizer: John Doe',
-              style: TextStyle(fontSize: 20),
-            ),
-            Text(
-              'Address: 123 Main Street, Cityville',
-              style: TextStyle(fontSize: 16),
-            ),
-            Text(
-              'Date: 2023-12-15',
-              style: TextStyle(fontSize: 16),
-            ),
-            Text(
-              'Time: 15:00',
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 16),
-            // Button for the list of participants
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ParticipantsListPage(),
-                  ),
-                );
-              },
-              child: Text('Список участников'),
-            ),
-            SizedBox(height: 16),
-            // Remaining space for additional content
-            Expanded(
-              child: Container(),
-            ),
-          ],
+              SizedBox(height: 16),
+              // Organizer name, address, date, and time
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white, // Белый фон
+                  borderRadius: BorderRadius.circular(8.0), // Опционально, добавляем скругления углов
+                ),
+                padding: EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    Text(
+                      'Organizer: John Doe',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    Text(
+                      'Address: 123 Main Street, Cityville',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    Text(
+                      'Date: 2023-12-15',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    Text(
+                      'Time: 15:00',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 16),
+              // Button for the list of participants
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ParticipantsListPage(),
+                    ),
+                  );
+                },
+                child: Text('Список участников'),
+              ),
+              SizedBox(height: 16),
+              // Remaining space for additional content
+              Expanded(
+                child: Container(),
+              ),
+            ],
+          ),
         ),
       ),
     );
