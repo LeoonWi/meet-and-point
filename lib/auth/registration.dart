@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:meet_and_point/api/api.dart';
+import 'package:meet_and_point/auth/login.dart';
 
 class RegistrationPage extends StatelessWidget {
   const RegistrationPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    String? email;
-    String? pass;
-    String? confirmPass;
+    TextEditingController email = TextEditingController();
+    TextEditingController pass = TextEditingController();
+    TextEditingController confirmPass = TextEditingController();
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
+        backgroundColor: const Color(0xFF285BC0),
         resizeToAvoidBottomInset : false,
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 34.0),
@@ -29,6 +32,8 @@ class RegistrationPage extends StatelessWidget {
               ),
               const SizedBox(height: 113),
               TextFormField(
+                controller: email,
+                textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.email_outlined),
                   prefixIconColor: const Color(0xFF6D7278),
@@ -43,10 +48,11 @@ class RegistrationPage extends StatelessWidget {
                   fillColor: const Color(0xFFFFFFFF),
                   filled: true,
                 ),
-                initialValue: email,
               ),
               const SizedBox(height: 12),
               TextFormField(
+                controller: pass,
+                textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.lock_outline),
                   prefixIconColor: const Color(0xFF6D7278),
@@ -60,10 +66,11 @@ class RegistrationPage extends StatelessWidget {
                   fillColor: const Color(0xFFFFFFFF),
                   filled: true,
                 ),
-                initialValue: pass,
               ),
               const SizedBox(height: 12),
               TextFormField(
+                controller: confirmPass,
+                textInputAction: TextInputAction.next,
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.lock_outline),
                   prefixIconColor: const Color(0xFF6D7278),
@@ -77,12 +84,26 @@ class RegistrationPage extends StatelessWidget {
                   fillColor: const Color(0xFFFFFFFF),
                   filled: true
                 ),
-                initialValue: confirmPass,
               ),
               const SizedBox(height: 57),
               ElevatedButton(
-                onPressed: () {
-
+                onPressed: () async {
+                  if(email.text != null && pass.text != null && pass.text == confirmPass.text) {
+                    final result = await Api().registration(email.text, pass.text);
+                    if (result == 'Successfully') {
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext) => LoginPage()));
+                    } else {
+                      showDialog(context: context, builder: (context) => new AlertDialog(
+                        title: Text('ошибка', textAlign: TextAlign.center),
+                        content: Text('Что-то пошло не так', textAlign: TextAlign.center),
+                      ));
+                    }
+                  } else {
+                    showDialog(context: context, builder: (context) => new AlertDialog(
+                      title: Text('ошибка', textAlign: TextAlign.center),
+                      content: Text('Заполните все поля', textAlign: TextAlign.center),
+                    ));
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(182, 44),
