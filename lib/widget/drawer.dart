@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:meet_and_point/auth/login.dart';
+import 'package:meet_and_point/configure.dart';
+import 'package:meet_and_point/friends.dart';
+import 'package:meet_and_point/meetinglist.dart';
 import 'package:meet_and_point/widget/ListTileOwn.dart';
 
 class DrawerSide extends StatelessWidget {
   String name;
-  DrawerSide({super.key, required this.name});
+  String email;
+  String password;
+  DrawerSide({super.key, required this.name, required this.email, required this.password});
 
   @override
   Widget build(BuildContext context) {
@@ -36,30 +42,34 @@ class DrawerSide extends StatelessWidget {
           ),
           const SizedBox(height: 100),
           ListTile(
+            style: ListTileStyle.list,
             title: const ListTileOwn(value: 'Встречи'),
             onTap: () {
-
+              Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => MeetingListPage()));
             },
           ),
           const SizedBox(height: 10),
           ListTile(
             title: const ListTileOwn(value: 'Друзья'),
             onTap: () {
-
+              Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => FriendListPage()));
             },
           ),
           const SizedBox(height: 10),
           ListTile(
             title: const ListTileOwn(value: 'Настройки'),
             onTap: () {
-
+              Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => ConfigPage()));
             },
           ),
           const SizedBox(height: 100),
           ListTile(
             title: ListTileOwn(value: 'Выход'),
             onTap: () {
-
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => LoginPage()));
             },
           ),
         ],

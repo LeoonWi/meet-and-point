@@ -1,16 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:meet_and_point/api/api.dart';
 import 'package:meet_and_point/map_screen.dart';
 import 'package:meet_and_point/widget/drawer.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class HomePage extends StatefulWidget {
+  final int id;
+
+  HomePage({super.key, required this.id});
+
+  @override
+  State<StatefulWidget> createState() => HomePageState();
+}
+
+
+class HomePageState extends State<HomePage> {
+
+  String name = 'name';
+  String email = 'email';
+  String password = 'password';
+
+  void getData() async {
+    final results = await Api().showUser(widget.id);
+    name = results['name'];
+    email = results['email'];
+    password = results['password'];
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    getData();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        drawer: DrawerSide(name: 'LeoonWi'),
+        drawer: DrawerSide(name: name!, email: email!, password: password!),
         body: Stack(
           children: [
             MapScreen(markerList: [], indexFlag: 0, allowOnTap: true),

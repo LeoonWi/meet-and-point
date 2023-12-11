@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meet_and_point/meetingdetail.dart';
 
 class Meeting {
   final String title;
@@ -30,6 +31,8 @@ class MeetingListPage extends StatelessWidget {
     ),
   ];
 
+  MeetingListPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -39,55 +42,26 @@ class MeetingListPage extends StatelessWidget {
       ),
       home: Scaffold(
         appBar: AppBar(
-          title: Text('App Bar Title'),
-        ),
-        drawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                ),
-                child: Text(
-                  'Drawer Header',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                  ),
-                ),
-              ),
-              ListTile(
-                title: Text('Item 1'),
-                onTap: () {
-                  // Implement action for Item 1
-                },
-              ),
-              ListTile(
-                title: Text('Item 2'),
-                onTap: () {
-                  // Implement action for Item 2
-                },
-              ),
-              // Add more ListTile widgets for other drawer items
-            ],
+          backgroundColor: Color(0xFF102F6A),
+          leading: IconButton(
+            icon: Icon(Icons.keyboard_backspace),
+            color: Colors.white,
+            iconSize: 35,
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
+          centerTitle: true,
+          title: const Text('Встречи', textAlign: TextAlign.center, style: TextStyle(
+            color: Colors.white,
+            fontSize: 30,
+            fontWeight: FontWeight.w600
+          )),
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 34.0),
           child: Column(
             children: [
-              const SizedBox(height: 169),
-              const Text(
-                'Список встреч',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 34,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFFFFFFFF),
-                ),
-              ),
-              const SizedBox(height: 113),
               meetings.isEmpty
                   ? Center(
                 child: Text(
@@ -129,12 +103,13 @@ class MeetingListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: Color(0xFF102F6A),
       margin: EdgeInsets.all(8.0),
       child: ListTile(
         title: Text(
           meeting.title,
           style: TextStyle(
-            color: Color(0xFF285BC0),
+            color: Color(0xFFFFFFFF),
           ),
         ),
         subtitle: Column(
@@ -143,27 +118,29 @@ class MeetingListItem extends StatelessWidget {
             Text(
               'Место: ${meeting.place}',
               style: TextStyle(
-                color: Color(0xFF285BC0),
+                color: Color(0xFFFFFFFF),
               ),
             ),
             Text(
               'Дата: ${meeting.date}',
               style: TextStyle(
-                color: Color(0xFF285BC0),
+                color: Color(0xFFFFFFFF),
               ),
             ),
             Text(
               'Время: ${meeting.time}',
               style: TextStyle(
-                color: Color(0xFF285BC0),
+                color: Color(0xFFFFFFFF),
               ),
             ),
           ],
         ),
         trailing: IconButton(
           icon: Icon(Icons.gps_fixed),
-          color: Color(0xFF285BC0),
-          onPressed: onGPS,
+          color: Color(0xFFFFFFFF),
+          onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => MeetingDetail()));
+          },
         ),
       ),
     );

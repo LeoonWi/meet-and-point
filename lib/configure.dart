@@ -11,6 +11,23 @@ class ConfigPage extends StatelessWidget {
     String? confirmPass;
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color(0xFF102F6A),
+        leading: IconButton(
+          icon: Icon(Icons.keyboard_backspace),
+          color: Colors.white,
+          iconSize: 35,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        centerTitle: true,
+        title: const Text('Настройки', textAlign: TextAlign.center, style: TextStyle(
+            color: Colors.white,
+            fontSize: 30,
+            fontWeight: FontWeight.w600
+        )),
+      ),
       backgroundColor: Color(0xFF285BC0), // Added background color
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -19,7 +36,6 @@ class ConfigPage extends StatelessWidget {
           children: [
             // Input field to change username
             const SizedBox(height: 16.0),
-            const Text( 'Настройки',textAlign : TextAlign.center, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 34.0)),
             const SizedBox(height: 16.0),
             TextFormField(
               onChanged: (value) {
@@ -39,8 +55,6 @@ class ConfigPage extends StatelessWidget {
                 newEmail = value;
               },
               decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.email_outlined),
-                prefixIconColor: const Color(0xFF6D7278),
                 hintText: 'Изменить email',
                 hintStyle: const TextStyle(
                   color: Color(0xFF6D7278),

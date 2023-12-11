@@ -13,6 +13,8 @@ class FriendListPage extends StatelessWidget {
     Friend(name: 'Давид', phone: '555-5678'),
   ];
 
+  FriendListPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -21,22 +23,28 @@ class FriendListPage extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFF285BC0),
       ),
       home: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Color(0xFF102F6A),
+          leading: IconButton(
+            icon: Icon(Icons.keyboard_backspace),
+            color: Colors.white,
+            iconSize: 35,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          centerTitle: true,
+          title: const Text('Друзья', textAlign: TextAlign.center, style: TextStyle(
+              color: Colors.white,
+              fontSize: 30,
+              fontWeight: FontWeight.w600
+          )),
+        ),
         resizeToAvoidBottomInset: false,
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 34.0),
           child: Column(
             children: [
-              const SizedBox(height: 169),
-              const Text(
-                'Список друзей',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 34,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFFFFFFFF),
-                ),
-              ),
-              const SizedBox(height: 113),
               friends.isEmpty
                   ? Center(
                 child: Text(
@@ -78,34 +86,27 @@ class FriendListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: Color(0xFF102F6A),
       margin: EdgeInsets.all(8.0),
       child: ListTile(
         title: Text(
           friend.name,
           style: TextStyle(
-            color: Color(0xFF285BC0),
+            color: Color(0xFFFFFFFF),
           ),
         ),
         subtitle: Text(
           friend.phone,
           style: TextStyle(
-            color: Color(0xFF285BC0),
+            color: Color(0xFFFFFFFF),
           ),
         ),
         trailing: IconButton(
           icon: Icon(Icons.delete),
-          color: Color(0xFF285BC0),
+          color: Color(0xFFFFFFFF),
           onPressed: onDelete,
         ),
       ),
     );
-  }
-}
-
-class AppBarTitle extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    // Implement your app bar title widget here
-    return Text('App Bar Title');
   }
 }
