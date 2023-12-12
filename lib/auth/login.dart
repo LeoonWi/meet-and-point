@@ -76,7 +76,8 @@ class LoginPage extends StatelessWidget {
                     children: [
                       ElevatedButton(
                         onPressed: () async {
-
+                          email.text = 'vi@gmail.com';
+                          pass.text = '123456';
                           if (email.text != null && pass.text != null) {
                             final results = await Api().login(email.text!, pass.text!);
                             if (results != 'Error') {

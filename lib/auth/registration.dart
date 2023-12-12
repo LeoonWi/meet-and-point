@@ -7,6 +7,7 @@ class RegistrationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController name = TextEditingController();
     TextEditingController email = TextEditingController();
     TextEditingController pass = TextEditingController();
     TextEditingController confirmPass = TextEditingController();
@@ -20,7 +21,7 @@ class RegistrationPage extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 34.0),
           child: Column(
             children: [
-              const SizedBox(height: 169),
+              const SizedBox(height: 80),
               const Text(
                 'Создать аккаунт',
                 textAlign: TextAlign.center,
@@ -31,6 +32,25 @@ class RegistrationPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 113),
+              TextFormField(
+                controller: name,
+                textInputAction: TextInputAction.next,
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.account_circle_outlined),
+                  prefixIconColor: const Color(0xFF6D7278),
+                  hintText: 'Имя пользователя',
+                  hintStyle: const TextStyle(
+                    color: Color(0xFF6D7278),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: const BorderSide(width: 10.0, color: Colors.black),
+                  ),
+                  fillColor: const Color(0xFFFFFFFF),
+                  filled: true,
+                ),
+              ),
+              const SizedBox(height: 12),
               TextFormField(
                 controller: email,
                 textInputAction: TextInputAction.next,
@@ -88,16 +108,42 @@ class RegistrationPage extends StatelessWidget {
               const SizedBox(height: 57),
               ElevatedButton(
                 onPressed: () async {
-                  if(email.text != null && pass.text != null && pass.text == confirmPass.text) {
-                    final result = await Api().registration(email.text, pass.text);
-                    if (result == 'Successfully') {
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext) => LoginPage()));
-                    } else {
-                      showDialog(context: context, builder: (context) => new AlertDialog(
-                        title: Text('ошибка', textAlign: TextAlign.center),
-                        content: Text('Что-то пошло не так', textAlign: TextAlign.center),
-                      ));
-                    }
+                  if(name.text != null && email.text != null && pass.text != null) {
+                    if (pass.text == confirmPass.text) {
+                      final result = await Api().registration(name.text, email.text, pass.text);
+                      if (result == 'Successfully') {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (BuildContext) => LoginPage()));
+                      } else if (result == 'Name_taken') {
+                        showDialog(
+                            context: context,
+                            builder: (context) => new AlertDialog(
+                              title: Text('ОШИБКА',
+                                  textAlign: TextAlign.center),
+                              content: Text('Никнем уже занят',
+                                  textAlign: TextAlign.center),
+                            ));
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (context) => new AlertDialog(
+                            title: Text('ОШИБКА',
+                              textAlign: TextAlign.center),
+                            content: Text('Что-то пошло не так',
+                              textAlign: TextAlign.center),
+                            ));
+                       }
+                     } else {
+                      showDialog(
+                          context: context,
+                          builder: (context) => new AlertDialog(
+                            title: Text('ОШИБКА',
+                                textAlign: TextAlign.center),
+                            content: Text('Пароли разные',
+                                textAlign: TextAlign.center),
+                          ));
+                     }
                   } else {
                     showDialog(context: context, builder: (context) => new AlertDialog(
                       title: Text('ошибка', textAlign: TextAlign.center),
@@ -112,7 +158,7 @@ class RegistrationPage extends StatelessWidget {
               const SizedBox(height: 26),
               ElevatedButton(
                 onPressed: () {
-
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext) => LoginPage()));
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF102F6A),

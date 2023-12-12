@@ -3,16 +3,29 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:meet_and_point/meetingdetail.dart';
+import 'package:meet_and_point/createMeeting.dart';
 
 class MapScreen extends StatefulWidget {
-  List<LatLng> markerList = [];
+  List<LatLng> markerList;
   int indexFlag;
   bool allowOnTap;
   LatLng? initCenter;
   double? initZoom;
+  int idUser;
+  String? userName;
 
 
-  MapScreen({super.key, required this.markerList, required this.indexFlag, required this.allowOnTap, this.initCenter, this.initZoom});
+  MapScreen({
+    super.key,
+    required this.markerList,
+    required this.indexFlag,
+    required this.allowOnTap,
+    this.initCenter,
+    this.initZoom,
+    required this.idUser,
+    this.userName,
+  });
 
   @override
   State<StatefulWidget> createState() => _MapScreenState();
@@ -23,6 +36,7 @@ class _MapScreenState extends State<MapScreen> {
   final _mapController = MapController();
   // List<Placemark> location = [];
   List<Marker> mapPoints = [];
+  double currentZoom = 9.0;
 
   List<int> get _flags => const [
     InteractiveFlag.all & ~InteractiveFlag.rotate,
@@ -67,6 +81,9 @@ class _MapScreenState extends State<MapScreen> {
             interactionOptions: InteractionOptions(
               flags: _flags[widget.indexFlag],
             ),
+            onPositionChanged: (position, hasGesture) {
+              currentZoom = _mapController.zoom;
+            },
             onTap: (TapPosition p, LatLng l) async {
               if (widget.allowOnTap == true) {
                 // location = await placemarkFromCoordinates(l.latitude, l.longitude);
@@ -81,7 +98,9 @@ class _MapScreenState extends State<MapScreen> {
                       alignment: Alignment.center,
                     )
                 );
-                _mapController.move(l, 15);
+                // debugPrint(l.latitude.toString());
+                // debugPrint(l.longitude.toString());
+                _mapController.move(l, currentZoom);
                 setState(() {});
                 showBottomSheet(context: context, backgroundColor: Colors.transparent, elevation: 0, builder: (context) {
                   return Padding(
@@ -110,7 +129,9 @@ class _MapScreenState extends State<MapScreen> {
                           const Spacer(),
                           IconButton(
                               onPressed: () {
-
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (BuildContext) => createMeeting(idUser: widget.idUser, markerList: [l], userName: widget.userName!,)));
                               },
                               icon: const Icon(Icons.check),
                               iconSize: 50,

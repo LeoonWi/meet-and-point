@@ -139,7 +139,7 @@ class MeetingListItem extends StatelessWidget {
           icon: Icon(Icons.gps_fixed),
           color: Color(0xFFFFFFFF),
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => MeetingDetail()));
+            // Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => MeetingDetail()));
           },
         ),
       ),
