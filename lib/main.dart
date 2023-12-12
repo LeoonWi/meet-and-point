@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meet_and_point/auth/login.dart';
+import 'package:meet_and_point/friends.dart';
 import 'package:meet_and_point/home.dart';
 
 void main() {
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         scaffoldBackgroundColor: const Color(0xFF285BC0),
       ),
-      home: const LoginPage(),
+      home: FriendListPage(),
       // const HomePage(),
     );
   }
