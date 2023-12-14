@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:meet_and_point/auth/login.dart';
-import 'package:meet_and_point/home.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,7 +21,6 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFF285BC0),
       ),
       home: const LoginPage(),
-      // const HomePage(),
     );
   }
 }

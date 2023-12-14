@@ -34,6 +34,7 @@ class HomePageState extends State<HomePage> {
     for(int i=0;i<resultsMarker.length;i++) {
       getMarkerList.add(LatLng(resultsMarker[i]["latitude"], resultsMarker[i]["longitude"]));
     }
+    print(getMarkerList);
     return getMarkerList!;
   }
 
@@ -56,7 +57,7 @@ class HomePageState extends State<HomePage> {
             return MaterialApp(
               debugShowCheckedModeBanner: false,
               home: Scaffold(
-                drawer: DrawerSide(name: name!, email: email!, password: password!),
+                drawer: DrawerSide(idUser: widget.id, name: name!, email: email!, password: password!),
                 body: Stack(
                   children: [
                     MapScreen(markerList: data, indexFlag: 0, allowOnTap: true, idUser: widget.id, userName: name),

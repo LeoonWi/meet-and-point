@@ -6,10 +6,11 @@ import 'package:meet_and_point/meetinglist.dart';
 import 'package:meet_and_point/widget/ListTileOwn.dart';
 
 class DrawerSide extends StatelessWidget {
+  int idUser;
   String name;
   String email;
   String password;
-  DrawerSide({super.key, required this.name, required this.email, required this.password});
+  DrawerSide({super.key,required this.idUser, required this.name, required this.email, required this.password});
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +47,7 @@ class DrawerSide extends StatelessWidget {
             title: const ListTileOwn(value: 'Встречи'),
             onTap: () {
               Navigator.pop(context);
-              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => MeetingListPage()));
+              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => MeetingListPage(idUser: idUser, username: name)));
             },
           ),
           const SizedBox(height: 10),

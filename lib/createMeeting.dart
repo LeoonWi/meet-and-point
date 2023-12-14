@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:meet_and_point/api/api.dart';
 import 'package:meet_and_point/friendslistmeeting.dart';
 import 'package:meet_and_point/map_screen.dart';
+import 'package:meet_and_point/meetinglist.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:meet_and_point/meetingdetail.dart';
+import 'package:intl/intl.dart';
 
 class createMeeting extends StatefulWidget {
   int idUser;
@@ -18,41 +22,17 @@ class createMeetingPage extends State<createMeeting> {
 
   TextEditingController _nameMeeting = TextEditingController();
   DateTime now = DateTime.now();
-
-  void _showModal() {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Container(
-            width: double.infinity,
-            height: 350,
-            child: Column(
-              children: <Widget>[
-                TableCalendar(
-                    rowHeight: 40,
-                    focusedDay: now,
-                    firstDay: DateTime(2022,01,01),
-                    lastDay: DateTime(2049,01,01)
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    ).then((value) {
-      if (value != null) {
-        print('Data received from modal: $value');
-      }
-    });
-  }
+  DateFormat formatter = DateFormat('yyyy-MM-dd');
+  String formattedDate = '';
 
   @override
   Widget build(BuildContext context) {
+    formattedDate = formatter.format(now.toLocal());
+    print(formattedDate);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
+        resizeToAvoidBottomInset : false,
         appBar: AppBar(
           backgroundColor: Color(0xFF102F6A),
           leading: IconButton(
@@ -81,6 +61,7 @@ class createMeetingPage extends State<createMeeting> {
               filled: true,
             ),
           ),
+
         ),
         body: Container(
           decoration: const BoxDecoration(
@@ -92,8 +73,8 @@ class createMeetingPage extends State<createMeeting> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                    width: 200,
-                    height: 200,
+                    width: 160,
+                    height: 160,
                     decoration: BoxDecoration(
                       border: Border.all(
                           color: Colors.white,
@@ -114,7 +95,7 @@ class createMeetingPage extends State<createMeeting> {
                 // Organizer name, address, date, and time
                 Container(
                   width: 400,
-                  height: 300,
+                  height: 500,
                   decoration: BoxDecoration(
                       color: const Color(0xFF102F6A),
                       borderRadius: BorderRadius.circular(8.0),
@@ -129,40 +110,54 @@ class createMeetingPage extends State<createMeeting> {
                     children: [
                       Text(
                         'Организатор: ${widget.userName}',
-                        style: TextStyle(fontSize: 26, color: Colors.white, fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: 22, color: Colors.white, fontWeight: FontWeight.bold),
                       ),
                       Text(
                         'Ш: ${widget.markerList[0].latitude}',
-                        style: TextStyle(fontSize: 22, color: Colors.white),
+                        style: TextStyle(fontSize: 20, color: Colors.white),
                       ),
                       Text(
                         'Д: ${widget.markerList[0].longitude}',
-                        style: TextStyle(fontSize: 22, color: Colors.white),
+                        style: TextStyle(fontSize: 20, color: Colors.white),
                       ),
-                      Text(
-                        'Дата: 2023-12-15',
-                        style: TextStyle(fontSize: 22, color: Colors.white),
-                      ),
-                      Text(
-                        'Время: 15:00',
-                        style: TextStyle(fontSize: 22, color: Colors.white),
+                      TableCalendar(
+                          rowHeight: 40,
+                          focusedDay: now,
+                          firstDay: DateTime(2022,01,01),
+                          lastDay: DateTime(2049,01,01),
+                          daysOfWeekStyle: const DaysOfWeekStyle(
+                            weekdayStyle: TextStyle(color: Colors.white),
+                            weekendStyle: TextStyle(color: Colors.white),
+                          ),
+                          calendarStyle: const CalendarStyle(
+                            defaultTextStyle: TextStyle(color: Colors.white),
+                            weekendTextStyle: TextStyle(color: Colors.red),
+                          ),
+                          headerStyle: const HeaderStyle(
+                            formatButtonVisible: false,
+                            titleCentered: true,
+                            titleTextStyle: TextStyle(color: Colors.white),
+                            leftChevronIcon: Icon(Icons.chevron_left, color: Colors.white,),
+                            rightChevronIcon: Icon(Icons.chevron_right, color: Colors.white,)
+                          ),
+                          selectedDayPredicate: (day) {
+                            return isSameDay(day, now);
+                          },
+                          onDaySelected: (selectedDay, focusedDay) {
+                            setState(() {
+                              now = selectedDay;
+                              formattedDate = formatter.format(now.toLocal());
+                            });
+                            print(formattedDate);
+                          }
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 16),
-                Column(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        _showModal();
-                      },
-                      child: const Text('Выбрать дату', style: TextStyle(color: Color(0xFF102F6A))),
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(182, 44)
-                      ),
-                    ),
-                    const SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: () {
                         Navigator.push(
@@ -177,12 +172,33 @@ class createMeetingPage extends State<createMeeting> {
                           minimumSize: const Size(182, 44)
                       ),
                     ),
+                    // SizedBox(width: 10),
+                    ElevatedButton(
+                      onPressed: () async {
+                        if(_nameMeeting.text != null) {
+                          final response = await Api().createMeeting(
+                              _nameMeeting.text,
+                              widget.markerList[0].latitude,
+                              widget.markerList[0].longitude,
+                              formattedDate,
+                              widget.idUser);
+                          if (response == "Successfully") {
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext) => MeetingListPage(
+                                          idUser: widget.idUser,
+                                          username: widget.userName,
+                                        )));
+                          }
+                        }
+                      },
+                      child: const Text('Сохранить', style: TextStyle(color: Color(0xFF102F6A))),
+                      style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(182, 44)
+                      ),
+                    ),
                   ],
-                ),
-                const SizedBox(height: 16),
-                // Remaining space for additional content
-                Expanded(
-                  child: Container(),
                 ),
               ],
             ),

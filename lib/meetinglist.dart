@@ -1,37 +1,69 @@
 import 'package:flutter/material.dart';
+import 'package:meet_and_point/api/api.dart';
+import 'package:meet_and_point/home.dart';
 import 'package:meet_and_point/meetingdetail.dart';
 
+
 class Meeting {
+  final int id;
   final String title;
-  final String place;
+  final String username;
+  final double latitude;
+  final double longitude;
   final String date;
-  final String time;
+  final int idUser;
 
   Meeting({
+    required this.id,
     required this.title,
-    required this.place,
+    required this.username,
+    required this.latitude,
+    required this.longitude,
     required this.date,
-    required this.time,
+    required this.idUser
   });
 }
 
-class MeetingListPage extends StatelessWidget {
-  final List<Meeting> meetings = [
-    Meeting(
-      title: 'Team Meeting',
-      place: 'Conference Room',
-      date: '2023-12-15',
-      time: '15:00',
-    ),
-    Meeting(
-      title: 'Project Kick-off',
-      place: 'Office Lobby',
-      date: '2023-12-18',
-      time: '10:30',
-    ),
-  ];
+class MeetingListPage extends StatefulWidget {
 
-  MeetingListPage({super.key});
+  int idUser;
+  String username;
+  MeetingListPage({super.key, required this.idUser, required this.username});
+
+  @override
+  State<MeetingListPage> createState() => _MeetingListPageState();
+}
+
+class _MeetingListPageState extends State<MeetingListPage> {
+
+
+
+  final List<Meeting> meetings = [];
+  
+  void getData() async {
+    final response = await Api().showMeeting(widget.idUser);
+    if (response[0]["message"] != "Error") {
+      for (int i = 0; i < response.length; i++) {
+        meetings.add(Meeting(
+            id: response[i]["id"],
+            title: response[i]["name"],
+            latitude: response[i]["latitude"],
+            longitude: response[i]["longitude"],
+            date: response[i]["date"],
+            idUser: widget.idUser,
+            username: widget.username
+        ));
+        setState(() {});
+      }
+    }
+  }
+
+  @override
+  void initState(){
+    getData();
+    super.initState();
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +80,9 @@ class MeetingListPage extends StatelessWidget {
             color: Colors.white,
             iconSize: 35,
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext) => HomePage(
+                id: widget.idUser,
+              )));
             },
           ),
           centerTitle: true,
@@ -116,7 +150,13 @@ class MeetingListItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Место: ${meeting.place}',
+              'Ш: ${meeting.latitude}',
+              style: TextStyle(
+                color: Color(0xFFFFFFFF),
+              ),
+            ),
+            Text(
+              'Д: ${meeting.longitude}',
               style: TextStyle(
                 color: Color(0xFFFFFFFF),
               ),
@@ -126,20 +166,14 @@ class MeetingListItem extends StatelessWidget {
               style: TextStyle(
                 color: Color(0xFFFFFFFF),
               ),
-            ),
-            Text(
-              'Время: ${meeting.time}',
-              style: TextStyle(
-                color: Color(0xFFFFFFFF),
-              ),
-            ),
+            )
           ],
         ),
         trailing: IconButton(
           icon: Icon(Icons.gps_fixed),
           color: Color(0xFFFFFFFF),
           onPressed: () {
-            // Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => MeetingDetail()));
+            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => MeetingDetail(id: meeting.id, idUser: meeting.idUser, name: meeting.title, latitude: meeting.latitude, longitude: meeting.longitude, date: meeting.date, username: meeting.username)));
           },
         ),
       ),
