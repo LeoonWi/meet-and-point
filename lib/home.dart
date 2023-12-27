@@ -89,7 +89,7 @@ class HomePageState extends State<HomePage> {
                         ),
                         const SizedBox(width: 53,),
                         const Text(
-                          "Meet'N'Point",
+                          "Plan'N'Meet",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                           color: Colors.white,
